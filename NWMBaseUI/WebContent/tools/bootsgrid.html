@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>LOG ON DEMAND</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+ <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+ <!-- <script type='text/javascript' src='D:/userdata/balg/Desktop/Login/js/jquery.min.js'></script> -->
+<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> -->
+    
+</head>
+
+
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="/NWMBaseUI/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="/NWMBaseUI/css/bootstrap-multiselect.css">
+  
+<!-- <link rel="stylesheet" type="text/css" href="D:\userdata\balg\Desktop\Login\css\jquery-ui.css"> -->
+ 
+  <style>
+  #feedback { font-size: 1.0em;  }
+  #selectable .ui-selecting { background:#124191 ; font-color:white; }
+  #selectable .ui-selected { background: #124191; color: white; }
+  #selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; background :white }
+  #selectable li { margin: 3px; padding: 0.4em; font-size: 1.0em; height: 18px; }
+
+  
+   #feedback { font-size: 1.0em; }
+  #selectable1 .ui-selecting { background: #124191; font-colorlor:white;  }
+  #selectable1 .ui-selected { background: #124191; color: white; }
+  #selectable1 { list-style-type: none; margin: 0; padding: 0; width: 60%;background :white  }
+  #selectable1 li { margin: 3px; padding: 0.4em; font-size: 1.0em; height: 18px; }
+  
+   #feedback { font-size: 1.0em; }
+  #selectable2 .ui-selecting { background:#124191; color:white; }
+  #selectable2 .ui-selected { background: #124191; color: white; }
+  #selectable2 { list-style-type: none; margin: 0; padding: 0; width: 60%;background :white  }
+  #selectable2 li { margin: 3px; padding: 0.4em; font-size: 1.0em; height: 18px; }
+  
+   #feedback { font-size: 1.0em; }
+  #selectable3 .ui-selecting { background: #124191; color:white; }
+  #selectable3 .ui-selected { background: #124191; color: white; }
+  #selectable3 { list-style-type: none; margin: 0; padding: 0; width: 60%;background :white  }
+  #selectable3 li { margin: 3px; padding: 0.4em; font-size: 1.0em; height: 18px; }
+  
+  
+  
+ 
+  .button {
+    background-color: #124191;
+    border: 1px;
+    color: white;
+    padding: 15px 340px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: auto;
+    cursor: pointer;
+}
+
+
+.button1 {
+    background-color: #124191;
+    border: 1px;
+    color: white;
+    padding: 15px 327px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: auto;
+    cursor: pointer;
+}
+
+.submit {
+    background-color: #124191;
+    border: 1px;
+    color: white;
+    padding: 15px 325px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: auto;
+    cursor: pointer;
+}
+
+
+
+
+// Css For Search Box
+
+
+  </style>
+  <!--<script type='text/javascript' src="D:/userdata/balg/Desktop/Login/js/jquery-1.12.4.js"></script>
+  <script  type='text/javascript' src="D:/userdata/balg/Desktop/Login/js/jquery-ui.js"></script> -->
+  
+  
+   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+ <!--  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script> -->
+
+<script type ="text/javascript" >
+var selectElemVal;
+var selectElemText;
+var selectElemValCli;
+var selectElemTextCli = "MAXIS";
+var empName=null;
+var empID=null;
+
+var deviceList = "";
+var commandList ="";
+var devicearr = [];
+var commandarr = [];
+var devicetype = "BSC";
+var commandListNew = "";
+var optionSelIndex ="";
+var e= "";
+var optionseldev = "";
+var a="";
+var b=[];
+
+//calling client manager service and populate the select list
+$(document).ready(function() {
+	$.ajax({
+	type: "GET",
+	contentType: "application/json; charset=utf-8",
+	url: "/NWMDeviceService/circles/5",
+	dataType: "json",
+	success: function(data) {
+		$("#circle").append("<option selected="+"selected" +"disabled="+"disabled> </option>");
+		$.each(data, function(key, val){
+			$("#circle").append("<option value="+val.cId+">"+val.cName+"</option>");
+		  })
+	},
+	error: function(result) {
+	//alert("");
+	}	
+	});
+	});
+	
+	
+//calling circle manager service on client select tag value change and populate the device list
+
+	
+//calling device manager service on select tag value change and populate the device list
+  $(document).ready(function () {
+	    $("#circle").change(function () {
+	$("#selectable").empty();
+	selectElemVal = $(this).val();
+	selectElemText = $(this).find("option:selected").text();
+	$.ajax({
+	type: "GET",
+	contentType: "application/json; charset=utf-8",
+	url: "/NWMDeviceService/devices/"+selectElemVal,
+	dataType: "json",
+	success: function(data) {
+		if(data.length != 0)
+			{
+				$.each(data, function(key, val){
+				  //  $("#selectable").append("<li class= "+"ui-widget-content"+">"+val.name+"</li>");
+					$("#selectable").append("<li class="+"ui-widget-content"+" value="+val.name+">"+val.name+"</li>");
+				  })
+			}
+		else
+			{
+				alert("NO DEVICES ARE FOUND FOR "+selectElemText+" CIRCLE");
+			}
+	},
+	error: function(result) {
+	alert("Error");
+	}
+	});
+	});
+  	});
+  	
+  	
+//calling command manager service on select tag value change and populate the device list
+	$(document).ready(function() {
+		
+	// Newly added while selecting circle commands will be loaded //
+		 $("#circle").change(function () {
+				$("#selectable").empty();
+				selectElemVal = $(this).val();
+				selectElemText = $(this).find("option:selected").text();
+		      $.ajax({
+			      type: "GET",
+			      contentType: "application/json; charset=utf-8",
+			      url: "/NWMCommandService/commands/bsc",
+			      dataType: "json",
+			      success: function(data) {
+			              $.each(data, function(key, val){
+			                //  $("#selectable1").append("<li class='ui-widget-content'>"+val.name+"</li>");
+			            	  $("#selectable1").append("<li class="+"ui-widget-content"+" value="+val.name+">"+val.name+"</li>");
+			                })
+			      },
+			      error: function(result) {
+			      alert("Db Connection Failed");
+			      }
+		      });
+	      });
+	});
+	
+	$(document).ready(function() {
+		 $("#circle").change(function () {
+				$("#selectable").empty();
+				selectElemVal = $(this).val();
+				selectElemText = $(this).find("option:selected").text();
+	      $.ajax({
+		      type: "GET",
+		      contentType: "application/json; charset=utf-8",
+		      url: "/NWMCommandService/commands/mcbsc",
+		      dataType: "json",
+		      success: function(data) {
+		              $.each(data, function(key, val){
+		                  $("#selectable3").append("<li class='ui-widget-content'>"+val.name+"</li>");
+		                })
+		      },
+		      error: function(result) {
+		      alert("Db Connection Failed");
+		      }
+	      });
+  });
+		 
+	});
+	
+	</script>
+	
+	
+	
+
+  <script type ="text/javascript">
+  $(document).ready(function() {
+	    $( "#selectable" ).selectable({
+		    stop: function() {
+		     devicearr = [];
+		     deviceList = "";
+		        $(".ui-selected" ,this).each(function() {
+		          var $this = $(this);
+		          var index = $this.attr("value");
+	
+		          devicearr.push(index);
+		          deviceList = devicearr.toString();
+		         // alert(devicearr);
+		        });
+		      }
+	    
+	    } );
+	   
+	  } );
+  
+  $(document).ready(function() {
+	    $( "#selectable1" ).selectable({
+		    stop: function() {
+		    	commandarr = [];
+		    	commandList = "";
+		        $(".ui-selected", this).each(function() {
+		          var $this = $(this);
+		          var index = $this.attr("value");
+		          commandarr.push(index);
+		          commandList +=index+"||"; //commandarr.toString();
+		         // alert(commandList);
+		        });
+		      }
+	    
+	    } );
+	   
+	  } );
+   $( function() {
+    $( "#selectable2" ).selectable();
+  } );
+  
+   $( function() {
+    $( "#selectable3" ).selectable();
+  } );
+  
+  
+   $( function() {
+    $( ".widget input[type=submit], .widget a, .widget button" ).button();
+    $( "button, input, a" ).click( function( event ) {
+      event.preventDefault();
+    } );
+  } );
+  
+ $(document).ready(function(){
+    $(".button").click(function(){
+        $(".row1").toggle("hide");
+    });
+});
+		
+$(document).ready(function(){
+    $(".button1").click(function(){
+        $(".row2").toggle("hide");
+    });
+});
+ </script>
+ 
+ 
+ 
+
+ <script type="text/javascript">
+ 
+ function validate(){
+	 b=[];
+	  e = document.getElementById("circle");
+	  a = document.getElementById("selectable");
+	 // $(.dropdown-menu li a).text();
+	 // b = a.getElementsByTagName('li'); 
+	 // alert(devicearr.length);
+	      
+     // alert( a.options[a.selectedIndex].value);
+   //  var optionSelectedText = e.options[e.selectedIndex].text;
+    // alert(optionSelectedText)
+	
+      optionSelIndex = e.options[e.selectedIndex].value;
+
+     if (optionSelIndex == "") {
+         alert("Please Select a Circle");
+         return false;       
+     }
+     else if( devicearr.length == 0){
+    	 alert("Select the devices");
+    	 return false;
+     } else if(commandarr.length == 0){
+    	 
+    	 alert("Select the Commands");
+    	 return false;
+     }
+   else {
+	   
+        return true;
+     }
+ }
+ 
+ 
+ // Function for Search Box //
+ 
+ 
+ function myFunction() {
+    var input, filter, selectable;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("selectable");
+    li = ul.getElementsByTagName("selectable");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("a")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+ 
+ // Select All
+ 
+ function SelectSelectableElement (selectableContainer, elementsToSelect)
+{
+	
+    // add unselecting class to all elements in the styleboard canvas except the ones to select
+	 $(".ui-selected", selectableContainer).not(elementsToSelect).removeClass("ui-selected").addClass("ui-unselected");
+
+	    // add ui-selecting class to the elements to select
+	    $(elementsToSelect).not(".ui-selected").addClass("ui-selected");
+
+	    // trigger the mouse stop event (this will select all .ui-selecting elements, and deselect all .ui-unselecting elements)
+	   
+	    //selectableContainer.data("selectable").mouseStop(null);
+	    
+	    
+}
+
+
+
+$(document).ready(function(){
+	$("#selectable").selectable();
+$("#b1").click(function(){
+	
+	//alert(devicearr.length);
+	var mlist = $("#selectable li").length;
+	//alert($("#selectable li").length);
+	 // alert(mlist );
+    SelectSelectableElement($("#selectable"),$("li:lt("+mlist+")", "#selectable"));
+ 
+});
+});
+
+
+$("#selectable1").selectable();
+$(document).ready(function(){
+$("#b2").click(function(){
+	
+	//alert("test");
+	//alert(devicearr.length);
+	var clist = $("#selectable1 li").length;
+	//alert($("#selectable li").length);
+	 // alert(mlist );
+    SelectSelectableElement($("#selectable1"), $("li:lt("+clist+")", "#selectable1"));
+ 
+});
+});
+
+
+
+
+ 
+ 
+ </script>
+
+ <script type="text/javascript">
+ 
+	
+  //Invoking the Soap Service to the url passing //
+  
+  			$(document).ready(function () {
+            $("#BTNSERVICE").click(function () {         
+                     commandListNew = commandList.substring(0,commandList.length-2);
+            	
+            	
+            	if(optionSelIndex !== "" &&  devicearr.length!==0 && commandarr.length !==0 )
+            		{
+            		
+          
+            	var webserUrl = "http://10.135.248.15/PROCESS_SERVICE/ProcessWebService.asmx?op=StartNWMProcess";
+           //	var command_list = "http://localhost:8080/NWMCommandService/commands/BSC"
+            		
+            			
+            		var soapRequest =
+            			'<?xml version="1.0" encoding="utf-8"?> \
+            			<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \
+            			    xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
+            			    xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+            			  <soap:Body> \
+            			    <StartNWMProcess  xmlns="http://tempuri.org/"> \
+		            			  <CLIENT_NAME>'+selectElemTextCli+'</CLIENT_NAME> \
+		          			      <CIRCLE_NAME>'+selectElemText+'</CIRCLE_NAME> \
+		          			      <ELEMENT_NAME>'+deviceList+'</ELEMENT_NAME> \
+		          			      <EMPLOYEE_NAME>'+empName+'</EMPLOYEE_NAME> \
+		          			      <EMPLOYEE_ID>'+empID+'</EMPLOYEE_ID> \
+		          			      <COMMAND_LIST>'+commandListNew+'</COMMAND_LIST> \
+            			    </StartNWMProcess> \
+            			  </soap:Body> \
+            			</soap:Envelope>'; 
+            			
+         			        	
+                	$.ajax({        
+                    url: webserUrl,
+                    type: "POST",
+                    crossDomain: true,
+                    dataType: "xml",
+                    data: soapRequest,
+                    processData : false,
+                    contentType: "text/xml; charset=\"utf-8\"",
+                    success: SuccessOccur,
+                    error: ErrorOccur,
+                    headers:{
+                        "Access-Control-Allow-Origin":"*"
+                    },   
+               
+                    });
+                	
+            		}
+            });
+            
+          
+        })
+                    
+
+        function SuccessOccur(data, status, req) {
+            if (status == "success")
+               // alert(req.responseText);
+            alert("Process Requested...");
+        }
+        function ErrorOccur(data, status, req) {
+        	
+        	alert(data);
+           alert("No Service Invoked");
+           
+           
+        }
+        
+        
+       // Adding Validations
+       
+
+       
+  
+  
+</script>
+ 
+ 
+
+ 
+
+ <body>
+</body>
+<div class="container-fluid">
+<header>
+<h3><font color ="#4D5766">On Demand </font></h3>
+</header>
+<br>
+ 
+<!--  	<b><font color ="#4D5766">Select Client : </font></b>
+	<select name="" style = "width: 10em; heigth: 10em" id="client" >
+	  <option selected="selected" disabled="disabled">Select</option>
+	</select>
+	
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+
+<form id="form1" name="form1"> 
+<b><font color ="#4D5766">Select Circle : </font></b>
+	<select name="" style = "width: 10em; heigth: 10em" id="circle" >
+	  <!-- <option selected="selected" disabled="disabled">Select</option> -->
+	</select>
+	
+<br>
+<br>
+
+<p>
+  <button class="button" id ="bsc"><b>BSC</b></button>
+</p>
+  
+<div class="row1" >
+ 
+    
+    <div class="col-sm-4" style="background-color:white; max-height:150px;height:auto;overflow-y:auto">
+    
+    <button id="b1">Select All</button>
+	<b><font color ="#4D5766">  Devices:</font></b>
+<ol id="selectable" ></ol>            																	<!-- Dynamic Device List -->
+	</div>	
+    <div class="col-sm-4" style="background-color:white;max-height:150px;height:auto;overflow-y:auto">
+    <button id="b2">Select All</button>
+	<b><font color ="#4D5766">Commands:</font></b>
+	<ol id="selectable1"></ol>        																	<!-- Dynamic BSC command List -->
+	</div>
+</div>
+  
+  <br>
+  <p>
+  <button class="button1"><b>MCBSC</b></button>
+ </p>
+ <div class="row2">
+ 
+	<div class="col-sm-4" style="background-color:white;max-height:150px;height:auto;overflow-y:auto">
+	<button id="b2">Select All</button>
+	<b><font color ="#4D5766">Devices:</font></b>
+<ol id="selectable2">
+</ol>
+	</div>	
+    <div class="col-sm-4" style="background-color:white; max-height:150px;height:auto;overflow-y:auto ">
+    <button id="b2">Select All</button>
+	<b><font color ="#4D5766">Commands:</font></b>
+	<ol id="selectable3"></ol>        																	<!-- Dynamic MSBSC command List -->
+	</div> 
+  </div>
+ </form>
+<div class ="widget">
+ 
+<button class="submit" id = "BTNSERVICE" onclick="validate()"><b>Excecute</b></button>
+
+</div> 
+</div>
+</head>
+</html>
